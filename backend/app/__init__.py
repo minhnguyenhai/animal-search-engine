@@ -5,7 +5,7 @@ from config import Config
 
 def create_app(config_class=Config):
     # Load environment variables from .env
-    load_dotenv()
+    # load_dotenv()
     
     app = Flask(__name__)
     app.config.from_object(config_class)

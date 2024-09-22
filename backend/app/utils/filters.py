@@ -40,7 +40,8 @@ class SearchFilters:
             self.url, 
             headers=self.headers, 
             json=payload,
-            auth=HTTPBasicAuth(self.username, self.password)
+            auth=HTTPBasicAuth(self.username, self.password),
+            verify=False
         )
         
         search_results = []
