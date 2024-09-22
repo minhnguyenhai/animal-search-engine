@@ -1,5 +1,6 @@
 from flask import current_app as app
 from dataclasses import dataclass
+from requests.auth import HTTPBasicAuth
 import requests
 
 
@@ -18,6 +19,10 @@ class SearchFilters:
             "Content-Type": "application/json"
         }
         
+        # Credentials for Elasticsearch Authentication
+        self.username = app.config["ELASTICSEARCH_USERNAME"]
+        self.password = app.config["ELASTICSEARCH_PASSWORD"]
+        
         
     def search_by_query_string(self, query):
         payload = {
@@ -34,7 +39,8 @@ class SearchFilters:
         response = requests.get(
             self.url, 
             headers=self.headers, 
-            json=payload
+            json=payload,
+            auth=HTTPBasicAuth(self.username, self.password)
         )
         
         search_results = []
