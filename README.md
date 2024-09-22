@@ -1,1 +1,1 @@
-# animal-search-engine
+# Animal Search Engine
