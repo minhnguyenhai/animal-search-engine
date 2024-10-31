@@ -28,9 +28,31 @@ class SearchGUI:
 
     def create_widgets(self) -> None:
         """Create and configure all GUI widgets."""
+        self._create_top_buttons()  # Add this line
         self._create_search_input()
         self._create_search_button()
         self._create_results_area()
+
+    def _create_top_buttons(self) -> None:
+        """Create top navigation buttons."""
+        button_frame = tk.Frame(self.root)
+        button_frame.pack(fill=tk.X, pady=5)
+
+        # Upload button at top-right
+        upload_btn = tk.Button(
+            button_frame,
+            text="Chuyển sang Upload",
+            command=self._open_uploader,
+            font=(self.FONT_FAMILY, self.FONT_SIZE)
+        )
+        upload_btn.pack(side=tk.RIGHT, padx=10)
+
+    def _open_uploader(self) -> None:
+        """Open the uploader window and hide search window."""
+        self.root.withdraw()  # Hide search window
+        from elastic_uploader import ElasticUploaderGUI
+        uploader = ElasticUploaderGUI(self)  # Pass search_gui instance
+        uploader.run()
 
     def _create_search_input(self) -> None:
         """Create the search input field and label."""
@@ -87,20 +109,31 @@ class SearchGUI:
 
     def _display_results(self, results: list) -> None:
         """Display the search results in the results area."""
-        for result in results:
-            # Lấy tối đa 3 dòng từ description
+        for idx, result in enumerate(results):
             description_lines = result['description'].splitlines()
             if len(description_lines) > 3:
                 description_preview = "\n".join(description_lines[:3]) + "\n..."
             else:
                 description_preview = "\n".join(description_lines)
             
-            self.results_area.insert(tk.END, "")
-            self.results_area.insert(tk.END, result['title'], "link")
+            # Tạo tag riêng cho từng link
+            link_tag = f"link_{idx}"
+            self.results_area.tag_configure(
+                link_tag,
+                foreground="blue",
+                underline=1,
+                font=(self.FONT_FAMILY, self.FONT_SIZE)
+            )
             
-            # Create closure for URL callback
-            callback = lambda e, url=result['url']: webbrowser.open_new_tab(url)
-            self.results_area.tag_bind("link", "<Button-1>", callback)
+            self.results_area.insert(tk.END, "")
+            self.results_area.insert(tk.END, result['title'], link_tag)
+            
+            # Tạo callback riêng cho từng link
+            self.results_area.tag_bind(
+                link_tag, 
+                "<Button-1>", 
+                lambda e, url=result['url']: webbrowser.open_new_tab(url)
+            )
             
             self.results_area.insert(
                 tk.END,

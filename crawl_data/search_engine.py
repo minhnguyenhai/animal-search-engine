@@ -31,7 +31,7 @@ class SearchEngine:
             "query": {
                 "multi_match": {
                     "query": cleaned_text,
-                    "fields": ["title", "description", "content"],
+                    "fields": ["title", "description", "content", "url"],
                     "type": "best_fields"
                 }
             },
