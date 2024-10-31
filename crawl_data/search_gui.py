@@ -91,6 +91,10 @@ class SearchGUI:
             underline=1,
             font=(self.FONT_FAMILY, self.FONT_SIZE)
         )
+        self.results_area.tag_configure(
+            "bold",
+            font=(self.FONT_FAMILY, self.FONT_SIZE, "bold")
+        )
 
     def setup_bindings(self) -> None:
         """Set up event bindings for the GUI."""
@@ -107,8 +111,36 @@ class SearchGUI:
         
         self._display_results(results)
 
+    def _get_keywords(self, query: str) -> list:
+        """Extract keywords from search query."""
+        return [word.lower() for word in query.split()]
+
+    def _highlight_text(self, text: str, keywords: list) -> None:
+        """Insert text with highlighted keywords."""
+        text_lower = text.lower()
+        last_pos = 0
+        
+        for start_pos in range(len(text)):
+            matched = False
+            for keyword in keywords:
+                if text_lower[start_pos:].startswith(keyword):
+                    if start_pos > last_pos:
+                        self.results_area.insert(tk.END, text[last_pos:start_pos])
+                    self.results_area.insert(tk.END, text[start_pos:start_pos + len(keyword)], "bold")
+                    last_pos = start_pos + len(keyword)
+                    matched = True
+                    break
+            
+            if matched:
+                start_pos = last_pos - 1  # Adjust position to check overlapping matches
+
+        if last_pos < len(text):
+            self.results_area.insert(tk.END, text[last_pos:])
+
     def _display_results(self, results: list) -> None:
         """Display the search results in the results area."""
+        query_keywords = self._get_keywords(self.query_input.get())
+        
         for idx, result in enumerate(results):
             description_lines = result['description'].splitlines()
             if len(description_lines) > 3:
@@ -125,20 +157,31 @@ class SearchGUI:
                 font=(self.FONT_FAMILY, self.FONT_SIZE)
             )
             
-            self.results_area.insert(tk.END, "")
-            self.results_area.insert(tk.END, result['title'], link_tag)
+            # Thêm title với link
+            self.results_area.insert(tk.END, "\n")
+            self.results_area.insert(tk.END, result['title'], (link_tag))
             
-            # Tạo callback riêng cho từng link
+            # Bind event click cho link
             self.results_area.tag_bind(
-                link_tag, 
-                "<Button-1>", 
+                link_tag,
+                "<Button-1>",
                 lambda e, url=result['url']: webbrowser.open_new_tab(url)
             )
-            
-            self.results_area.insert(
-                tk.END,
-                f" ({result['score']})\n{description_preview}\n\n"
+            self.results_area.tag_bind(
+                link_tag,
+                "<Enter>",
+                lambda e: self.results_area.config(cursor="hand2")
             )
+            self.results_area.tag_bind(
+                link_tag,
+                "<Leave>",
+                lambda e: self.results_area.config(cursor="")
+            )
+            
+            # Tiếp tục với phần hiển thị khác
+            self.results_area.insert(tk.END, f" ({result['score']})\n")
+            self._highlight_text(description_preview, query_keywords)
+            self.results_area.insert(tk.END, "\n\n")
 
     def on_key_release(self, event: tk.Event) -> None:
         """Handle key release events."""

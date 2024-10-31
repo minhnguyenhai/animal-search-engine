@@ -15,7 +15,7 @@ class SearchEngine:
     
     def create_query(self, search_text: str) -> Dict[str, Any]:
         """
-        Create an Elasticsearch query from user input.
+        Create an Elasticsearch query from user input using the full search text.
 
         Args:
             search_text: The user's search text
@@ -23,10 +23,11 @@ class SearchEngine:
         Returns:
             Dict containing the Elasticsearch query structure
         """
+        #chuyển về chữ thường
+        search_text = search_text.lower()
         # Remove "động vật" and clean up input
         cleaned_text = search_text.replace("động vật", "").strip()
-
-        # Create a multi_match query
+        
         query = {
             "query": {
                 "multi_match": {
