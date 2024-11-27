@@ -1,0 +1,112 @@
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    background-color: #f8f9fa;
+    color: #202124;
+}
+
+.search-container {
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.logo-container {
+    margin-bottom: 10px;
+    /* khi logo containẻ bị thu nhỏ hơn 400px, tự động thu nhỏ logo bên trong */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.logo {
+    max-width: 400px;
+    height: auto;
+    /* khi logo containẻ bị thu nhỏ hơn 400px, tự động thu nhỏ logo bên trong */
+    width: 100%;
+}
+
+
+.search-input {
+    width: 40%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-right: 10px;
+}
+
+.search-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #4285f4;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.search-button:hover {
+    background-color: #357ae8;
+}
+
+.results-container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 10px;
+}
+
+.result-item {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 15px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.result-title {
+    font-size: 18px;
+    color: #1a0dab;
+    text-decoration: none;
+}
+
+.result-title:hover {
+    text-decoration: underline;
+}
+
+.url-wrapper {
+    max-width: 100%;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    margin: 5px 0;
+}
+
+.result-url {
+    font-size: 14px;
+    color: #006621;
+    word-break: break-all;
+    display: inline-block;
+    max-width: 100%;
+}
+
+.result-description {
+    font-size: 14px;
+    color: #4d5156;
+    margin-top: 5px;
+}
+.result-description {
+    max-width: 100%; 
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box; 
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    line-height: 1.5;
+    max-height: 6em;
+}
