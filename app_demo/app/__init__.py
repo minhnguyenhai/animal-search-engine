@@ -13,7 +13,7 @@ def create_app(config_class=Config):
     from app.routes import search as search_bp
     from app.routes import admin as admin_bp
     app.register_blueprint(search_bp)
-    app.register_blueprint(admin_bp)
+    app.register_blueprint(admin_bp,url_prefix="/admin")
 
     
     return app
