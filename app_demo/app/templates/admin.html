@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='assets/nPHM.png') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{{ url_for('static', filename='js/admin.js') }}" defer></script>
+</head>
+<body>
+    <h1>Admin Dashboard</h1>
+    <div class="admin-container">
+        <!-- Danh sách Index -->
+        <section id="index-list-section">
+            <h2>Danh sách Index</h2>
+            <button id="refresh-indexes">Tải lại</button>
+            <ul id="index-list"></ul>
+        </section>
+
+        <!-- Tạo Index -->
+        <section id="create-index-section">
+            <h2>Tạo Index Mới</h2>
+            <form id="create-index-form">
+                <input type="input" id="index-name" placeholder="Tên Index" required>
+                <textarea id="index-config" placeholder="Cấu hình JSON cho Index"></textarea>
+                <button type="submit">Tạo Index</button>
+            </form>
+        </section>
+
+        <!-- Đẩy Folder Data -->
+        <section id="upload-data-section">
+            <h2>Đẩy Dữ Liệu lên Index</h2>
+            <form id="upload-data-form" enctype="multipart/form-data">
+                <select id="select-index-upload"></select>
+                <input type="file" id="data-folder" webkitdirectory directory multiple>
+                <button type="submit">Upload Data</button>
+            </form>
+        </section>
+
+        <!-- Lựa chọn Index -->
+        <section id="select-index-section">
+            <h2>Lựa chọn Index cho tìm kiếm</h2>
+            <select id="select-index-search">
+            </select>
+            <button id="set-client-index">Thiết lập</button>
+        </section>
+    </div>
+</body>
+</html>
