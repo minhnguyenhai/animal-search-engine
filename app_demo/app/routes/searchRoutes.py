@@ -1,7 +1,11 @@
-from flask import  request, jsonify
+from flask import  request, jsonify, render_template
 from app.routes import search
 from app.service.search_service import SearchService
 import logging
+
+@search.route("/", methods=["GET"])
+def mainpage():
+    return render_template("index.html")
 
 @search.route("/search", methods=["GET"])
 def perform_search():  # renamed from 'search' to avoid conflict

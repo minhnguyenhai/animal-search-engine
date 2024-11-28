@@ -15,6 +15,7 @@ class SearchService:
 
     def __init__(self):
         self.elastic = ElasticConnector().es
+        self.index_name = ElasticConnector().index_name
 
     def create_query(self, search_text: str) -> Dict[str, Any]:
         search_text = search_text.lower()
@@ -38,10 +39,10 @@ class SearchService:
             "min_score": self.MIN_SCORE_THRESHOLD
         }
 
-    def search_query(self, query: str,index_name="animal_information") -> List[SearchResult]:
+    def search_query(self, query: str) -> List[SearchResult]:
         query_body = self.create_query(query)
         try:
-            response = self.elastic.search(index=index_name, body=query_body)
+            response = self.elastic.search(index=self.index_name, body=query_body)
         except Exception as e:
             print(f"Error searching: {str(e)}")
             return []
@@ -51,6 +52,14 @@ class SearchService:
             hit["_source"]["description"],
             unquote(hit["_source"]["url"])
         ) for hit in response["hits"]["hits"]]
+    
+    def counnt_index(self):
+        self.elastic.count(self.index_name)
+
+
+
+#test luôn
+
 
 
 
