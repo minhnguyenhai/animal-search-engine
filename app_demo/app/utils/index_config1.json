@@ -1,0 +1,77 @@
+{ 
+    "settings": {
+        "analysis": {
+            "analyzer": {
+                "vn_text_analyzer": {
+                    "type": "custom",
+                    "tokenizer": "standard",
+                    "filter": ["lowercase"]
+                }
+            },
+            "tokenizer": {
+                "my_ngram_tokenizer": {
+                    "type": "ngram",
+                    "min_gram": 3,
+                    "max_gram": 4
+                }
+            },
+            "filter": {
+                "my_stop_filter": {
+                    "type": "stop",
+                    "stopwords": [
+                        "và", "là", "của", "cho", "với", "trong", "về", "đối", "những", 
+                        "này", "các", "đã", "không", "có", "từ", "khi", "ra", "cũng", 
+                        "như", "rằng", "thì", "vì", "sao", "tại", "cho", "lắm", "phải", 
+                        "mới", "sẽ", "nếu", "nào", "từng", "lại", "đi", "đến", "tôi", 
+                        "bạn", "mình", "nó", "họ", "gì", "đâu", "đâu", "rất", "làm", "tất", 
+                        "đây", "bây giờ", "một"
+                    ]
+                }
+            }
+        },
+        "similarity": {
+            "bm25_custom_description": {
+                "type": "BM25",
+                "k1": 1.8,
+                "b": 0.8
+            },
+            "bm25_custom_categories": {
+                "type": "BM25",
+                "k1": 2.0,
+                "b": 0.7
+            }
+        }
+    },
+    "mappings": {
+        "properties": {
+            "title": {
+                "type": "text",
+                "analyzer": "vn_text_analyzer"
+            },
+            "description": {
+                "type": "text",
+                "analyzer": "vn_text_analyzer",
+                "similarity": "bm25_custom_description"
+            },
+            "classify": {
+                "type": "text",
+                "analyzer": "vn_text_analyzer"
+            },
+            "url": {
+                "type": "keyword"
+            },
+            "first_img": {
+                "type": "keyword"
+            },
+            "content": {
+                "type": "text",
+                "analyzer": "vn_text_analyzer"
+            },
+            "categories": {
+                "type": "text",
+                "analyzer": "vn_text_analyzer",
+                "similarity": "bm25_custom_categories"
+            }
+        }
+    }
+}

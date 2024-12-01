@@ -1,0 +1,55 @@
+{
+  "settings": {
+    "analysis": {
+      "analyzer": {
+        "vn_text_analyzer": {
+          "type": "custom",
+          "tokenizer": "standard",
+          "filter": [
+            "lowercase"
+          ]
+        }
+      }
+    },
+    "similarity": {
+      "bm25_custom_title": {
+        "type": "BM25",
+        "k1": 2.0,
+        "b": 1.0
+      },
+      "bm25_custom_description": {
+        "type": "BM25",
+        "k1": 2.0,
+        "b": 0.2
+      }
+    }
+  },
+  "mappings": {
+    "properties": {
+      "title": {
+        "type": "text",
+        "analyzer": "vn_text_analyzer",
+        "similarity": "bm25_custom_title"
+      },
+      "description": {
+        "type": "text",
+        "analyzer": "vn_text_analyzer",
+        "similarity": "bm25_custom_description"
+      },
+      "classify": {
+        "type": "text",
+        "analyzer": "vn_text_analyzer"
+      },
+      "url": {
+        "type": "keyword"
+      },
+      "first_img": {
+        "type": "keyword"
+      },
+      "content": {
+        "type": "text",
+        "analyzer": "vn_text_analyzer"
+      }
+    }
+  }
+}
