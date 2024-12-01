@@ -39,7 +39,7 @@ class IndexService:
 
     def create_index(self, index_name: str):
         try:
-            index_config_path = "app_demo/app/utils/sad_config.json"
+            index_config_path = "app_demo/app/utils/index_config1.json"
             with open(index_config_path, "r", encoding="utf-8") as f:
                 index_config = json.load(f)
 
@@ -92,3 +92,18 @@ class IndexService:
         except Exception as e:
             print(f"Error deleting index: {str(e)}")
             return False
+
+
+    def get_index_config(self, index_name: str):
+        try:
+            settings = self.elastic.es.indices.get_settings(index=index_name)[index_name]["settings"]
+            mappings = self.elastic.es.indices.get_mapping(index=index_name)[index_name]["mappings"]
+            config = {
+                "settings": settings,
+                "mappings": mappings
+            }
+            print(f"Index config: {config}")
+            return config
+        except Exception as e:
+            print(f"Error getting index config: {str(e)}")
+            raise e

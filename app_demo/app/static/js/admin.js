@@ -13,15 +13,18 @@ document.addEventListener('DOMContentLoaded', function() {
             const indexList = $('#index-list');
             const selectClientIndex = $('#select-index-search');
             const selectUploadIndex = $('#select-index-upload');
+            const selectConfigIndex = $('#select-index-config');
 
             indexList.empty();
             selectClientIndex.empty();
             selectUploadIndex.empty();
+            selectConfigIndex.empty();
 
             remainingIndexes.forEach(index => {
                 indexList.append(`<li>${index.name} (${index.count}) <button class="delete-index" data-index="${index.name}">Xoá</button></li>`);
                 selectClientIndex.append(`<option value="${index.name}">${index.name}</option>`);
                 selectUploadIndex.append(`<option value="${index.name}">${index.name}</option>`);
+                selectConfigIndex.append(`<option value="${index.name}">${index.name}</option>`);
             });
         })
         .catch(error => console.error('Error:', error));
@@ -40,15 +43,18 @@ $(document).ready(function () {
             const indexList = $('#index-list');
             const selectClientIndex = $('#select-index-search');
             const selectUploadIndex = $('#select-index-upload');
+            const selectConfigIndex = $('#select-index-config');
 
             indexList.empty();
             selectClientIndex.empty();
             selectUploadIndex.empty();
+            selectConfigIndex.empty();
 
             remainingIndexes.forEach(index => {
                 indexList.append(`<li>${index.name} (${index.count}) <button class="delete-index" data-index="${index.name}">Xoá</button></li>`);
                 selectClientIndex.append(`<option value="${index.name}">${index.name}</option>`);
                 selectUploadIndex.append(`<option value="${index.name}">${index.name}</option>`);
+                selectConfigIndex.append(`<option value="${index.name}">${index.name}</option>`);
             });
 
             // Set default selected value if there are any indexes
@@ -191,6 +197,14 @@ $(document).ready(function () {
                 });
             }
         }
+    });
+
+    // Xem c���u hình Index
+    $('#view-index-config').click(function () {
+        const indexName = $('#select-index-config').val();
+        $.get(`/admin/index-config/${indexName}`, function (data) {
+            $('#index-config-display').text(JSON.stringify(data, null, 2));
+        }).fail(() => alert('Lỗi khi lấy cấu hình index.'));
     });
 
     // Popup functionality

@@ -110,3 +110,22 @@ body {
     line-height: 1.5;
     max-height: 6em;
 }
+
+.export-button {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.export-button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+.export-button:hover:not(:disabled) {
+    background-color: #45a049;
+}

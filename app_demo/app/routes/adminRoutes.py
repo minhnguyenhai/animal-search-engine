@@ -120,3 +120,15 @@ def delete_index(index_name):
             "message": str(e)
         }), 500
 
+
+@admin.route('/index-config/<index_name>', methods=['GET'])
+def get_index_config(index_name):
+    try:
+        config = index_service.get_index_config(index_name)
+        return jsonify(config)
+    except Exception as e:
+        return jsonify({
+            "error": "Internal server error.",
+            "message": str(e)
+        }), 500
+
