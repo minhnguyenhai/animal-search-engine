@@ -8,6 +8,7 @@ class SearchResult:
     title: str
     description: str
     url: str
+    score: float
 
 class SearchService:
     MAX_RESULTS = 10
@@ -50,7 +51,8 @@ class SearchService:
         return [SearchResult(
             hit["_source"]["title"],
             hit["_source"]["description"],
-            unquote(hit["_source"]["url"])
+            unquote(hit["_source"]["url"]),
+            hit["_score"]
         ) for hit in response["hits"]["hits"]]
     
     def counnt_index(self):

@@ -31,7 +31,8 @@ def perform_search():  # renamed from 'search' to avoid conflict
             formatted_results.append({
                 'title': result.title,
                 'url': result.url,
-                'description': result.description
+                'description': result.description,
+                'score': result.score
             })
         
         return jsonify(formatted_results)
