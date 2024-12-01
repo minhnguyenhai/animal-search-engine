@@ -36,6 +36,22 @@ class IndexService:
             print(f"Error getting indexes: {str(e)}")
             return []
 
+
+    def create_index(self, index_name: str):
+        try:
+            index_config_path = "app_demo/app/utils/sad_config.json"
+            with open(index_config_path, "r", encoding="utf-8") as f:
+                index_config = json.load(f)
+
+            self.elastic.es.indices.create(index=index_name, body=index_config)
+            return True
+        except FileNotFoundError:
+            print(f"Error: Configuration file not found at {index_config_path}")
+            return False
+        except Exception as e:
+            print(f"Error creating index: {str(e)}")
+            return False
+    
     
     def set_client_index(self, index_name: str):
         try:

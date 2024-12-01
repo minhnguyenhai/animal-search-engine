@@ -20,7 +20,24 @@ def get_indexes():
 
 @admin.route('/create-index', methods=['POST'])
 def create_index():
-    return "create index"
+    data = request.get_json()
+    index_name = data.get('indexName')
+    if index_name is None:
+        return jsonify({
+            "error": "Missing required fields.",
+            "message": "The required parameter 'indexName' is missing."
+        }), 400
+    is_created = index_service.create_index(index_name)
+    if is_created:
+        return jsonify({
+            "message": f"Index {index_name} created."
+        })
+    else:
+        return jsonify({
+            "error": "Internal server error.",
+            "message": "Failed to create index."
+        }), 500
+    
 
 
 @admin.route('/upload-data/<index_name>', methods=['POST'])

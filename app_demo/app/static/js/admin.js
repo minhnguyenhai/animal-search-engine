@@ -64,17 +64,28 @@ $(document).ready(function () {
     $('#create-index-form').submit(function (e) {
         e.preventDefault();
         const indexName = $('#index-name').val();
-        const indexConfig = $('#index-config').val();
+        if (!indexName) {
+            alert('Vui lòng nhập tên index.');
+            return;
+        }
+        // nếu tên index có kí tự đặc biệt hoặc tiếng việt khoảng trắng thì báo lỗi
+        if (!/^[a-z0-9_]+$/.test(indexName)) {
+            alert('Tên index chỉ chứa các kí tự a-z, 0-9 và dấu gạch dưới.');
+            return;
+        }
         $.ajax({
             url: '/admin/create-index',
             method: 'POST',
             contentType: 'application/json',
-            data: JSON.stringify({ name: indexName, config: indexConfig }),
+            data: JSON.stringify({ indexName: indexName }),
             success: () => {
                 alert('Tạo index thành công.');
                 $('#refresh-indexes').click();
             },
-            error: () => alert('Lỗi khi tạo index.')
+            error: (xhr) => {
+                console.error('Error creating index:', xhr.responseText);
+                alert(`Lỗi khi tạo index: ${xhr.responseText}`);
+            }
         });
     });
 
@@ -184,7 +195,7 @@ $(document).ready(function () {
 
     // Popup functionality
     var popup = document.getElementById("create-index-popup");
-    var btn = document.getElementById("open-create-index-popup");
+    var btn = document.getElementById("create-index-button");
     var span = document.getElementsByClassName("close")[0];
 
     btn.onclick = function() {
