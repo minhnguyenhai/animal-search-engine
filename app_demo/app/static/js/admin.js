@@ -9,25 +9,20 @@ document.addEventListener('DOMContentLoaded', function() {
             const remainingIndexes = data.slice(1);
             console.log('First index:', firstIndex);
             console.log('Remaining indexes:', remainingIndexes);
-            const indexList = document.getElementById('index-list');
-            const selectClientIndex = document.getElementById('select-index-search');
-            const selectUploadIndex = document.getElementById('select-index-upload');
 
-            indexList.innerHTML = '';
-            selectClientIndex.innerHTML = '';
-            selectUploadIndex.innerHTML = '';
+            const indexList = $('#index-list');
+            const selectClientIndex = $('#select-index-search');
+            const selectUploadIndex = $('#select-index-upload');
+
+            indexList.empty();
+            selectClientIndex.empty();
+            selectUploadIndex.empty();
 
             remainingIndexes.forEach(index => {
-                indexList.innerHTML += `<li>${index.name} (${index.count}) <button class="delete-index" data-index="${index.name}">Xoá</button></li>`;
-                selectClientIndex.innerHTML += `<option value="${index.name}">${index.name}</option>`;
-                selectUploadIndex.innerHTML += `<option value="${index.name}">${index.name}</option>`;
+                indexList.append(`<li>${index.name} (${index.count}) <button class="delete-index" data-index="${index.name}">Xoá</button></li>`);
+                selectClientIndex.append(`<option value="${index.name}">${index.name}</option>`);
+                selectUploadIndex.append(`<option value="${index.name}">${index.name}</option>`);
             });
-
-            // Set default selected value if there are any indexes
-            if (remainingIndexes.length > 0) {
-                selectClientIndex.value = firstIndex.name;
-                selectUploadIndex.value = firstIndex.name;
-            }
         })
         .catch(error => console.error('Error:', error));
 });
@@ -51,7 +46,7 @@ $(document).ready(function () {
             selectUploadIndex.empty();
 
             remainingIndexes.forEach(index => {
-                indexList.innerHTML += `<li>${index.name} (${index.count}) <button class="delete-index" data-index="${index.name}">Xoá</button></li>`;
+                indexList.append(`<li>${index.name} (${index.count}) <button class="delete-index" data-index="${index.name}">Xoá</button></li>`);
                 selectClientIndex.append(`<option value="${index.name}">${index.name}</option>`);
                 selectUploadIndex.append(`<option value="${index.name}">${index.name}</option>`);
             });

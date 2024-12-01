@@ -13,14 +13,14 @@
     <h1>Admin Dashboard</h1>
     <div class="admin-container">
         <!-- Danh sách Index -->
-        <section id="index-list-section">
+        <section id="index-list-section" class="scrollable-section">
             <h2>Danh sách Index</h2>
             <button id="refresh-indexes">Tải lại</button>
             <ul id="index-list"></ul>
         </section>
 
         <!-- Tạo Index -->
-        <section id="create-index-section">
+        <section id="create-index-section" class="scrollable-section">
             <h2>Tạo Index Mới</h2>
             <form id="create-index-form">
                 <input type="input" id="index-name" placeholder="Tên Index" required>
@@ -30,7 +30,7 @@
         </section>
 
         <!-- Đẩy Folder Data -->
-        <section id="upload-data-section">
+        <section id="upload-data-section" class="scrollable-section">
             <h2>Đẩy Dữ Liệu lên Index</h2>
             <form id="upload-data-form" enctype="multipart/form-data">
                 <select id="select-index-upload"></select>
@@ -40,7 +40,7 @@
         </section>
 
         <!-- Lựa chọn Index -->
-        <section id="select-index-section">
+        <section id="select-index-section" class="scrollable-section">
             <h2>Lựa chọn Index cho tìm kiếm</h2>
             <select id="select-index-search">
             </select>
