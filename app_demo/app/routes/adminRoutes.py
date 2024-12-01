@@ -12,6 +12,7 @@ uploaded_files = {}  # Dictionary to store uploaded files by index
 def admin_dashboard():
     return render_template('admin.html')
 
+
 @admin.route('/indexes', methods=['GET'])
 def get_indexes():
     return jsonify(index_service.get_indexes())
@@ -20,6 +21,7 @@ def get_indexes():
 @admin.route('/create-index', methods=['POST'])
 def create_index():
     return "create index"
+
 
 @admin.route('/upload-data/<index_name>', methods=['POST'])
 def upload_data(index_name):
@@ -52,6 +54,7 @@ def upload_data(index_name):
             "message": str(e)
         }), 500
 
+
 @admin.route('/set-client-index', methods=['POST'])
 def set_client_index():
     try:
@@ -73,6 +76,26 @@ def set_client_index():
                 "message": "Failed to set index."
             }), 500
         
+    except Exception as e:
+        print(e)
+        return jsonify({
+            "error": "Internal server error.",
+            "message": str(e)
+        }), 500
+
+
+@admin.route('/delete-index/<index_name>', methods=['DELETE'])
+def delete_index(index_name):
+    try:
+        is_deleted = index_service.delete_index(index_name)
+        if is_deleted:
+            return jsonify({
+                "message": f"Index {index_name} deleted."
+            })
+        else:
+            return jsonify({
+                "message": "Failed to delete index."
+            })
     except Exception as e:
         print(e)
         return jsonify({

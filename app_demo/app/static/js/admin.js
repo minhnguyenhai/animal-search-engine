@@ -10,11 +10,24 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log('First index:', firstIndex);
             console.log('Remaining indexes:', remainingIndexes);
             const indexList = document.getElementById('index-list');
+            const selectClientIndex = document.getElementById('select-index-search');
+            const selectUploadIndex = document.getElementById('select-index-upload');
+
             indexList.innerHTML = '';
+            selectClientIndex.innerHTML = '';
+            selectUploadIndex.innerHTML = '';
+
             remainingIndexes.forEach(index => {
-                indexList.innerHTML += `<li>${index.name}</li>`;
-                indexList.append(`<li>${index.count}</li>`)
+                indexList.innerHTML += `<li>${index.name} (${index.count}) <button class="delete-index" data-index="${index.name}">Xoá</button></li>`;
+                selectClientIndex.innerHTML += `<option value="${index.name}">${index.name}</option>`;
+                selectUploadIndex.innerHTML += `<option value="${index.name}">${index.name}</option>`;
             });
+
+            // Set default selected value if there are any indexes
+            if (remainingIndexes.length > 0) {
+                selectClientIndex.value = firstIndex.name;
+                selectUploadIndex.value = firstIndex.name;
+            }
         })
         .catch(error => console.error('Error:', error));
 });
@@ -38,8 +51,7 @@ $(document).ready(function () {
             selectUploadIndex.empty();
 
             remainingIndexes.forEach(index => {
-                indexList.append(`<li>${index.name}</li>`);
-                indexList.append(`<li>${index.count}</li>`)
+                indexList.innerHTML += `<li>${index.name} (${index.count}) <button class="delete-index" data-index="${index.name}">Xoá</button></li>`;
                 selectClientIndex.append(`<option value="${index.name}">${index.name}</option>`);
                 selectUploadIndex.append(`<option value="${index.name}">${index.name}</option>`);
             });
@@ -152,6 +164,47 @@ $(document).ready(function () {
         }).fail(() => alert('Lỗi khi thiết lập index cho client.'));
         $('#refresh-indexes').click();
     });
+
+    // Xoá Index
+    $(document).on('click', '.delete-index', function () {
+        const indexName = $(this).data('index');
+        if (confirm(`Bạn có chắc chắn muốn xoá index "${indexName}"?`)) {
+            if (indexName === using_index.name) {
+                alert('Không thể xoá index đang dùng.');
+                return;
+            }
+            if(confirm(`Xác nhận lần nữa, bạn chắc chắn muốn xoá "${indexName}"? này?`)) {
+                $.ajax({
+                    url: `/admin/delete-index/${indexName}`,
+                    method: 'DELETE',
+                    success: () => {
+                        alert('Xoá index thành công.');
+                        $('#refresh-indexes').click();
+                    },
+                    error: () => alert('Lỗi khi xoá index.')
+                });
+            }
+        }
+    });
+
+    // Popup functionality
+    var popup = document.getElementById("create-index-popup");
+    var btn = document.getElementById("open-create-index-popup");
+    var span = document.getElementsByClassName("close")[0];
+
+    btn.onclick = function() {
+        popup.style.display = "block";
+    }
+
+    span.onclick = function() {
+        popup.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        if (event.target == popup) {
+            popup.style.display = "none";
+        }
+    }
 
     // Tự động tải danh sách Index khi load trang
     $('#refresh-indexes').click();

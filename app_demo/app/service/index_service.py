@@ -8,6 +8,7 @@ class IndexService:
     def __init__(self):
         self.elastic = ElasticConnector()
 
+
     def get_indexes(self) -> List[Dict[str, Any]]:
         user_index = []
         try:
@@ -45,6 +46,7 @@ class IndexService:
             print(f"Error setting index: {str(e)}")
             return False
         
+
     def post_data_to_elastic(self, index_name, list_data):
         success=0
         for data in list_data:
@@ -66,3 +68,11 @@ class IndexService:
                 pass
         return success
 
+
+    def delete_index(self, index_name):
+        try:
+            self.elastic.es.indices.delete(index=index_name)
+            return True
+        except Exception as e:
+            print(f"Error deleting index: {str(e)}")
+            return False
