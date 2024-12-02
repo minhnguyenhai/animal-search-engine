@@ -27,7 +27,7 @@ class SearchService:
                 "multi_match": {
                     "query": cleaned_text,
                     "fields": [
-                        "title^2",
+                        "title^1",
                         "description^2", 
                         "content^0.5",
                         "classify^1",
@@ -48,19 +48,25 @@ class SearchService:
             print(f"Error searching: {str(e)}")
             return []
         
+        title_could_be = ["title", "scientific_name", "Title", "song", "tenchude", "content"]
+        description_could_be = ["description", "Description", "content", "noidung", "Content"]
+        url_could_be = ["url", "link"]
+
+        def find_first_match(source: dict, fields: list, default: str) -> str:
+            for field in fields:
+                if value := source.get(field):
+                    return value
+            return default
+
         return [SearchResult(
-            hit["_source"]["title"],
-            hit["_source"]["description"],
-            unquote(hit["_source"]["url"]),
+            find_first_match(hit["_source"], title_could_be, "không xác định được tiêu đề"),
+            find_first_match(hit["_source"], description_could_be, "không xác định được mô tả"),
+            unquote(find_first_match(hit["_source"], url_could_be, "không xác định được đường dẫn")),
             hit["_score"]
         ) for hit in response["hits"]["hits"]]
     
-    def counnt_index(self):
-        self.elastic.count(self.index_name)
-
-
-
-#test luôn
+    def count_index(self):  # Fixed typo in method name
+        return self.elastic.count(self.index_name)
 
 
 
