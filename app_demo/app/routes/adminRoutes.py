@@ -43,26 +43,41 @@ def create_index():
 @admin.route('/upload-data/<index_name>', methods=['POST'])
 def upload_data(index_name):
     try:
-        if 'files' not in request.files:
-            return jsonify({"error": "No files provided"}), 400
-            
-        files = request.files.getlist('files')
-        file_data = []
+        upload_type = request.form.get('upload_type', 'directory')
 
-        for file in files:
-            if file:
-                filename = secure_filename(file.filename)
-                file_content = file.read()
-                file_data.append({
-                    'name': filename,
-                    'file_content': file_content
-                })
-        
-        num_of_success = index_service.post_data_to_elastic(index_name,file_data)
-        
-        return jsonify({
-            "message": f"Đẩy thành công {num_of_success} / {len(file_data)} lên {index_name}"
-        })
+        if upload_type == 'directory':
+            if 'files' not in request.files:
+                return jsonify({"error": "No files provided"}), 400
+                
+            files = request.files.getlist('files')
+            file_data = []
+
+            for file in files:
+                if file:
+                    filename = secure_filename(file.filename)
+                    file_content = file.read()
+                    file_data.append({
+                        'name': filename,
+                        'file_content': file_content
+                    })
+            
+            num_of_success = index_service.post_data_to_elastic(index_name, file_data, upload_type)
+            return jsonify({
+                "message": f"Đẩy thành công {num_of_success} / {len(file_data)} lên {index_name}"
+            })
+        else:
+            if 'file' not in request.files:
+                return jsonify({"error": "No file provided"}), 400
+
+            file = request.files['file']
+            if not file:
+                return jsonify({"error": "Invalid file"}), 400
+
+            file_content = file.read()
+            num_of_success = index_service.post_data_to_elastic(index_name, [{'file_content': file_content}], upload_type)
+            return jsonify({
+                "message": f"Đẩy thành công {num_of_success} documents lên {index_name}"
+            })
 
     except Exception as e:
         print(e)

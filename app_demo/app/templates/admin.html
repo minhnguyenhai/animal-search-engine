@@ -33,7 +33,14 @@
             <h2>Đẩy Dữ Liệu lên Index</h2>
             <form id="upload-data-form" enctype="multipart/form-data">
                 <select id="select-index-upload"></select>
+                <div class="upload-type">
+                    <input type="radio" id="directory-upload" name="upload-type" value="directory" checked>
+                    <label for="directory-upload">Upload thư mục JSON</label>
+                    <input type="radio" id="file-upload" name="upload-type" value="file">
+                    <label for="file-upload">Upload file JSON tổng hợp</label>
+                </div>
                 <input type="file" id="data-folder" webkitdirectory directory multiple>
+                <input type="file" id="data-file" accept=".json" style="display: none;">
                 <button type="submit">Upload Data</button>
             </form>
         </section>

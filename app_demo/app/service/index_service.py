@@ -63,25 +63,46 @@ class IndexService:
             return False
         
 
-    def post_data_to_elastic(self, index_name, list_data):
-        success=0
-        for data in list_data:
-            try:
-                name = data['name'].split('.')[0]
-                # Decode byte string to UTF-8 and parse JSON
-                content_str = data['file_content'].decode('utf-8')
-                data_json = json.loads(content_str)
+    def post_data_to_elastic(self, index_name, list_data, upload_type='directory'):
+        success = 0
+        if upload_type == 'directory':
+            for data in list_data:
+                try:
+                    name = data['name'].split('.')[0]
+                    content_str = data['file_content'].decode('utf-8')
+                    data_json = json.loads(content_str)
 
-                self.elastic.es.index(
-                    index=index_name,
-                    id=name,
-                    body=data_json
-                )
-                success+=1
-            
+                    self.elastic.es.index(
+                        index=index_name,
+                        id=name,
+                        body=data_json
+                    )
+                    success += 1
+                except Exception as e:
+                    print(f"Error posting data: {str(e)}")
+                    pass
+        else:
+            try:
+                content_str = list_data[0]['file_content'].decode('utf-8')
+                documents = json.loads(content_str)
+                
+                if isinstance(documents, list):
+                    for doc in documents:
+                        try:
+                            self.elastic.es.index(
+                                index=index_name,
+                                body=doc
+                            )
+                            success += 1
+                        except Exception as e:
+                            print(f"Error posting document: {str(e)}")
+                            pass
+                else:
+                    return 0
             except Exception as e:
-                print(f"Error posting data: {str(e)}")
+                print(f"Error processing bulk file: {str(e)}")
                 pass
+        
         return success
 
 

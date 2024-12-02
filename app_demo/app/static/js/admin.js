@@ -95,78 +95,107 @@ $(document).ready(function () {
         });
     });
 
-    // Đẩy Folder Data lên Index
+    // Add upload type change handler
+    $('input[name="upload-type"]').change(function() {
+        if ($(this).val() === 'directory') {
+            $('#data-folder').show();
+            $('#data-file').hide();
+        } else {
+            $('#data-folder').hide();
+            $('#data-file').show();
+        }
+    });
+
+    // Replace both existing upload form submit handlers with this one
     $('#upload-data-form').submit(function (e) {
         e.preventDefault();
         const indexName = $('#select-index-upload').val();
-        const files = $('#data-folder')[0].files;
-        const BATCH_SIZE = 50; // Số file trong mỗi batch
-        
+        const uploadType = $('input[name="upload-type"]:checked').val();
+        const files = uploadType === 'directory' ? $('#data-folder')[0].files : $('#data-file')[0].files;
+
         if (files.length === 0) {
-            alert('Vui lòng chọn một thư mục để upload');
+            alert(uploadType === 'directory' ? 'Vui lòng chọn một thư mục để upload' : 'Vui lòng chọn một file JSON để upload');
             return;
         }
 
-        if (!confirm(`Bạn có chắc chắn muốn upload ${files.length} files vào index "${indexName}"?`)) {
+        if (!confirm(`Bạn có chắc chắn muốn upload ${uploadType === 'directory' ? files.length + ' files' : 'file ' + files[0].name} vào index "${indexName}"?`)) {
             return;
         }
-        
+
         if (indexName !== using_index.name) {
             if (!confirm(`Bạn đang upload dữ liệu vào index "${indexName}" thay vì index đang dùng "${using_index.name}". Bạn có chắc chắn muốn tiếp tục?`)) {
                 return;
             }
         }
 
-        // Chia files thành các batch nhỏ hơn
-        const batches = [];
-        for (let i = 0; i < files.length; i += BATCH_SIZE) {
-            batches.push(Array.from(files).slice(i, i + BATCH_SIZE));
-        }
+        const formData = new FormData();
+        formData.append('upload_type', uploadType);
 
-        let completedBatches = 0;
-        const totalBatches = batches.length;
-
-        // Hàm xử lý upload từng batch
-        function uploadBatch(batchFiles, batchIndex) {
-            const formData = new FormData();
-            batchFiles.forEach(file => {
-                formData.append('files', file);
-            });
-
-            return $.ajax({
+        if (uploadType === 'directory') {
+            // Handle directory upload
+            const BATCH_SIZE = 50;
+            const batches = [];
+            for (let i = 0; i < files.length; i += BATCH_SIZE) {
+                batches.push(Array.from(files).slice(i, i + BATCH_SIZE));
+            }
+            uploadAllBatches(batches, indexName, files.length);
+        } else {
+            // Handle single file upload
+            formData.append('file', files[0]);
+            alert('Chờ một chút nhé, đang xử lý file JSON...');
+            $.ajax({
                 url: `/admin/upload-data/${indexName}`,
                 method: 'POST',
                 processData: false,
                 contentType: false,
                 data: formData,
-                success: () => {
-                    completedBatches++;
-                    const progress = Math.round((completedBatches / totalBatches) * 100);
-                    console.log(`Completed batch ${completedBatches}/${totalBatches} (${progress}%)`);
+                success: (response) => {
+                    alert(response.message);
                     $('#refresh-indexes').click();
                 },
                 error: (xhr) => {
-                    console.error(`Error uploading batch ${batchIndex + 1}:`, xhr.responseText);
-                    throw new Error(`Failed to upload batch ${batchIndex + 1}`);
+                    alert('Lỗi khi upload data: ' + xhr.responseText);
                 }
             });
         }
-
-        // Upload các batch tuần tự
-        async function uploadAllBatches() {
-            try {
-                for (let i = 0; i < batches.length; i++) {
-                    await uploadBatch(batches[i], i);
-                }
-                alert(`Upload thành công ${files.length} files.`);
-                $('#refresh-indexes').click();
-            } catch (error) {
-                alert('Lỗi khi upload data: ' + error.message);
-            }
-        }
-
-        uploadAllBatches();
     });
+
+    // Helper function for batch uploads
+    async function uploadAllBatches(batches, indexName, totalFiles) {
+        let completedBatches = 0;
+        const totalBatches = batches.length;
+
+        try {
+            for (let i = 0; i < batches.length; i++) {
+                await uploadBatch(batches[i], i, indexName);
+                completedBatches++;
+                console.log(`Completed batch ${completedBatches}/${totalBatches} (${Math.round((completedBatches / totalBatches) * 100)}%)`);
+            }
+            alert(`Upload thành công ${totalFiles} files.`);
+            $('#refresh-indexes').click();
+        } catch (error) {
+            alert('Lỗi khi upload data: ' + error.message);
+        }
+    }
+
+    function uploadBatch(batchFiles, batchIndex, indexName) {
+        const formData = new FormData();
+        batchFiles.forEach(file => {
+            formData.append('files', file);
+        });
+
+        return $.ajax({
+            url: `/admin/upload-data/${indexName}`,
+            method: 'POST',
+            processData: false,
+            contentType: false,
+            data: formData,
+            error: (xhr) => {
+                console.error(`Error uploading batch ${batchIndex + 1}:`, xhr.responseText);
+                throw new Error(`Failed to upload batch ${batchIndex + 1}`);
+            }
+        });
+    }
 
     // Thiết lập Index cho tìm kiếm client
     $('#set-client-index').click(function () {
@@ -199,7 +228,7 @@ $(document).ready(function () {
         }
     });
 
-    // Xem c���u hình Index
+    // Xem cấu hình Index
     $('#view-index-config').click(function () {
         const indexName = $('#select-index-config').val();
         $.get(`/admin/index-config/${indexName}`, function (data) {
