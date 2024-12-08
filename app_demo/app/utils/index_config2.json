@@ -1,0 +1,105 @@
+{
+    "settings": {
+        "analysis": {
+            "analyzer": {
+                "vn_text_analyzer": {
+                    "type": "custom",
+                    "tokenizer": "standard",
+                    "filter": ["lowercase", "my_stop_filter"]
+                },
+                "vn_text_analyzer_no_accent": {
+                    "type": "custom",
+                    "tokenizer": "standard",
+                    "filter": ["lowercase", "asciifolding", "my_stop_filter"]
+                }
+            },
+            "tokenizer": {
+                "my_ngram_tokenizer": {
+                    "type": "ngram",
+                    "min_gram": 3,
+                    "max_gram": 4
+                }
+            },
+            "filter": {
+                "my_stop_filter": {
+                    "type": "stop",
+                    "stopwords_path": "stopword.txt"
+                }
+            }
+        },
+        "similarity": {
+            "bm25_custom_description": {
+                "type": "BM25",
+                "k1": 1.8,
+                "b": 0.8
+            },
+            "bm25_custom_categories": {
+                "type": "BM25",
+                "k1": 2.0,
+                "b": 0.7
+            }
+        }
+    },
+    "mappings": {
+        "properties": {
+            "title": {
+                "type": "text",
+                "analyzer": "vn_text_analyzer",
+                "fields": {
+                    "no_accent": {
+                        "type": "text",
+                        "analyzer": "vn_text_analyzer_no_accent"
+                    }
+                }
+            },
+            "description": {
+                "type": "text",
+                "analyzer": "vn_text_analyzer",
+                "similarity": "bm25_custom_description",
+                "fields": {
+                    "no_accent": {
+                        "type": "text",
+                        "analyzer": "vn_text_analyzer_no_accent"
+                    }
+                }
+            },
+            "classify": {
+                "type": "text",
+                "analyzer": "vn_text_analyzer",
+                "fields": {
+                    "no_accent": {
+                        "type": "text",
+                        "analyzer": "vn_text_analyzer_no_accent"
+                    }
+                }
+            },
+            "url": {
+                "type": "keyword"
+            },
+            "first_img": {
+                "type": "keyword"
+            },
+            "content": {
+                "type": "text",
+                "analyzer": "vn_text_analyzer",
+                "fields": {
+                    "no_accent": {
+                        "type": "text",
+                        "analyzer": "vn_text_analyzer_no_accent"
+                    }
+                }
+            },
+            "categories": {
+                "type": "text",
+                "analyzer": "vn_text_analyzer",
+                "similarity": "bm25_custom_categories",
+                "fields": {
+                    "no_accent": {
+                        "type": "text",
+                        "analyzer": "vn_text_analyzer_no_accent"
+                    }
+                }
+            }
+        }
+    }
+}
