@@ -39,7 +39,7 @@ class IndexService:
 
     def create_index(self, index_name: str):
         try:
-            index_config_path = "app_demo/app/utils/index_config1.json"
+            index_config_path = "app_demo/app/utils/index_config2.json"
             with open(index_config_path, "r", encoding="utf-8") as f:
                 index_config = json.load(f)
 

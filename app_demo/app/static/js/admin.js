@@ -168,6 +168,7 @@ $(document).ready(function () {
         try {
             for (let i = 0; i < batches.length; i++) {
                 await uploadBatch(batches[i], i, indexName);
+                $('#refresh-indexes').click();
                 completedBatches++;
                 console.log(`Completed batch ${completedBatches}/${totalBatches} (${Math.round((completedBatches / totalBatches) * 100)}%)`);
             }

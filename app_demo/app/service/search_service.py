@@ -18,20 +18,55 @@ class SearchService:
         self.elastic = ElasticConnector().es
         self.index_name = ElasticConnector().index_name
 
+    def _has_vietnamese_diacritics(self, text: str) -> bool:
+        vietnamese_diacritics = "áàảãạâấầẩẫậăắằẳẵặóòỏõọôốồổỗộơớờởỡợéèẻẽẹêếềểễệúùủũụưứừửữựíìỉĩịýỳỷỹỵđ"
+        return any(char in text for char in vietnamese_diacritics)
+
     def create_query(self, search_text: str) -> Dict[str, Any]:
         search_text = search_text.lower()
-        cleaned_text = search_text
+        cleaned_text = search_text #.replace("động vật", "").replace("dong vat", "").strip()
         
+        if not self._has_vietnamese_diacritics(cleaned_text):
+            # Query for non-accented text - prioritize no_accent fields
+            return {
+                "query": {
+                    "multi_match": {
+                        "query": cleaned_text,
+                        "fields": [
+                            "title.no_accent^2",
+                            "description.no_accent^3",
+                            "content.no_accent^1",
+                            "classify.no_accent^2",
+                            "categories.no_accent^3",
+                            "title^0.5",
+                            "description^0.8",
+                            "content^0.3",
+                            "classify^0.5",
+                            "categories^0.8"
+                        ],
+                        "type": "best_fields"
+                    }
+                },
+                "size": self.MAX_RESULTS,
+                "min_score": self.MIN_SCORE_THRESHOLD
+            }
+        
+        # Query for accented text - prioritize original fields
         return {
             "query": {
                 "multi_match": {
                     "query": cleaned_text,
                     "fields": [
-                        "title^1",
-                        "description^2", 
-                        "content^0.5",
-                        "classify^1",
-                        "categories^2"
+                        "title^2",
+                        "description^3",
+                        "content^1",
+                        "classify^2",
+                        "categories^3",
+                        "title.no_accent^0.5",
+                        "description.no_accent^0.8",
+                        "content.no_accent^0.3",
+                        "classify.no_accent^0.5",
+                        "categories.no_accent^0.8"
                     ],
                     "type": "best_fields"
                 }
