@@ -6,7 +6,8 @@
     <title>Admin Dashboard</title>
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='assets/nPHM.png') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- <script src="static/depen/jquery-3.6.0.min.js"></script> -->
+    <script src="{{ url_for('static', filename='depen/jquery-3.6.0.min.js') }}" defer></script>
     <script src="{{ url_for('static', filename='js/admin.js') }}" defer></script>
 </head>
 <body>

@@ -80,8 +80,8 @@ $(document).ready(function () {
             return;
         }
 
-        // Thay đổi URL trên trình duyệt mà không cần load lại trang
-        const newUrl = `${window.location.pathname}?q=${encodeURIComponent(query)}`;
+        // Change URL pattern to include /search
+        const newUrl = `/search?q=${encodeURIComponent(query)}`;
         history.pushState({ query: query }, '', newUrl);
         
         performSearch(query);
@@ -89,6 +89,7 @@ $(document).ready(function () {
 
     //Lưu và thực hiện lại trạng thái của trang khi người dùng click vào nút back hoặc forward trên trình duyệt
     $(window).on('popstate', function(event) {
+        // Update URL parsing to work with both /search and / paths
         const urlParams = new URLSearchParams(window.location.search);
         const query = urlParams.get('q');
         
@@ -98,6 +99,8 @@ $(document).ready(function () {
         } else {
             $('#results-container').empty();
             $('#search-input').val('');
+            // Update URL to base path when no query
+            history.replaceState(null, '', '/');
         }
     });
 
