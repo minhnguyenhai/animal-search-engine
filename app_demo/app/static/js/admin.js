@@ -80,10 +80,8 @@ $(document).ready(function () {
             return;
         }
         $.ajax({
-            url: '/admin/create-index',
-            method: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify({ indexName: indexName }),
+            url: `/admin/create-index?indexName=${indexName}`,
+            method: 'GET',
             success: () => {
                 alert('Tạo index thành công.');
                 $('#refresh-indexes').click();

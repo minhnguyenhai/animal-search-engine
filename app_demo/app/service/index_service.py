@@ -1,12 +1,14 @@
 from app.utils.elastic import ElasticConnector
 from typing import List, Dict, Any
 import json
-
+import os.path
 
 
 class IndexService:
     def __init__(self):
         self.elastic = ElasticConnector()
+        # Get the directory containing this script
+        self.base_dir = os.path.dirname(os.path.abspath(__file__))
 
 
     def get_indexes(self) -> List[Dict[str, Any]]:
@@ -39,7 +41,8 @@ class IndexService:
 
     def create_index(self, index_name: str):
         try:
-            index_config_path = "app_demo/app/utils/index_config2.json"
+            # Create absolute path to config file
+            index_config_path = os.path.join(self.base_dir, "..", "utils", "index_config2.json")
             with open(index_config_path, "r", encoding="utf-8") as f:
                 index_config = json.load(f)
 

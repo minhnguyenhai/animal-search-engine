@@ -8,7 +8,7 @@ def create_app(config_class=Config):
     # Load environment variables from .env
     # load_dotenv()
     
-    app = Flask(__name__)
+    app = Flask(__name__, static_folder="static")
     CORS(app)  # Thêm dòng này
     app.config.from_object(config_class)
     

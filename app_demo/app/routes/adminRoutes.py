@@ -18,10 +18,9 @@ def get_indexes():
     return jsonify(index_service.get_indexes())
     
 
-@admin.route('/create-index', methods=['POST'])
+@admin.route('/create-index', methods=['GET'])
 def create_index():
-    data = request.get_json()
-    index_name = data.get('indexName')
+    index_name = request.args.get('indexName')
     if index_name is None:
         return jsonify({
             "error": "Missing required fields.",
