@@ -30,7 +30,8 @@ class ElasticConnector:
         """Khởi tạo kết nối với Elasticsearch."""
         self.es = Elasticsearch(
             Config.ELASTICSEARCH_URL,
-            http_auth=(Config.ELASTICSEARCH_USERNAME , Config.ELASTICSEARCH_PASSWORD)
+            http_auth=(Config.ELASTICSEARCH_USERNAME , Config.ELASTICSEARCH_PASSWORD),
+            verify_certs=False
         )
         self.index_name = setting["last_used_index"]
         self.last_updated=setting["last_updated"]

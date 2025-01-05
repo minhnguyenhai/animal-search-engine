@@ -36,15 +36,16 @@ nbformat==5.10.4
 packaging==24.2
 pandocfilters==1.5.1
 parso==0.8.4
+pexpect==4.9.0
 pickleshare==0.7.5
 pipreqs==0.5.0
 platformdirs==4.3.6
 prompt_toolkit==3.0.48
+ptyprocess==0.7.0
 pure_eval==0.2.3
 Pygments==2.18.0
 python-dateutil==2.9.0.post0
 python-dotenv==1.0.1
-pywin32==308
 pyzmq==26.2.0
 referencing==0.35.1
 requests==2.32.3
